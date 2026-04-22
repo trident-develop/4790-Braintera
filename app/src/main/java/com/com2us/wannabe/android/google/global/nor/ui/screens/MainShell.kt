@@ -1,5 +1,7 @@
 package com.com2us.wannabe.android.google.global.nor.ui.screens
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -34,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,6 +77,15 @@ fun MainShell(prefs: Prefs) {
     // bottom-nav tap defaults back to "last played".
     LaunchedEffect(tab, queuedGame) {
         if (tab != MainTab.Play.ordinal) queuedGame = null
+    }
+
+    val context = LocalContext.current
+    BackHandler {
+        if (tab == MainTab.Games.ordinal) {
+            (context as? Activity)?.finish()
+        } else {
+            tab = MainTab.Games.ordinal
+        }
     }
 
     PlayfulBackground {
