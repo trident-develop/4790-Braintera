@@ -13,7 +13,7 @@
         android:theme="@style/Theme.Braintera" >
 
         <activity
-            android:name=".LoadingActivity"
+            android:name="com.com2us.wannabe.android.google.global.nor.LoadingActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/SplashScreen"
@@ -25,7 +25,7 @@
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.com2us.wannabe.android.google.global.nor.MainActivity"
             android:exported="false"
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait"

@@ -6,7 +6,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.com2us.wannabe.android.google.global.nor.R
+import com.microdose.ball.R
 
 // Project-provided font, used across the whole app.
 val BrainteraFont = FontFamily(

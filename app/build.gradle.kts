@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.com2us.wannabe.android.google.global.nor"
+    namespace = "com.microdose.ball"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -12,11 +12,11 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.com2us.wannabe.android.google.global.nor"
+        applicationId = "com.microdose.ball"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
