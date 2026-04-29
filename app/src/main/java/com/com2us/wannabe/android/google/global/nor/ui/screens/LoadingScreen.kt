@@ -10,6 +10,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,24 +35,24 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.com2us.wannabe.android.google.global.nor.ui.common.PlayfulBackground
-import com.com2us.wannabe.android.google.global.nor.ui.theme.BrainBlue
-import com.com2us.wannabe.android.google.global.nor.ui.theme.BrainCoral
-import com.com2us.wannabe.android.google.global.nor.ui.theme.BrainGreen
-import com.com2us.wannabe.android.google.global.nor.ui.theme.BrainPurple
-import com.com2us.wannabe.android.google.global.nor.ui.theme.BrainSky
-import com.com2us.wannabe.android.google.global.nor.ui.theme.BrainYellow
 import com.com2us.wannabe.android.google.global.nor.data.rain.InitWorker
 import com.com2us.wannabe.android.google.global.nor.data.rain.ifConnected
 import com.com2us.wannabe.android.google.global.nor.data.rain.mynav.InternetState
 import com.com2us.wannabe.android.google.global.nor.data.rain.mynav.NavPoint
 import com.com2us.wannabe.android.google.global.nor.data.rain.mynav.OneNav.point
 import com.com2us.wannabe.android.google.global.nor.data.rain.mynav.getState
+import com.com2us.wannabe.android.google.global.nor.ui.theme.BrainBlue
+import com.com2us.wannabe.android.google.global.nor.ui.theme.BrainCoral
+import com.com2us.wannabe.android.google.global.nor.ui.theme.BrainGreen
+import com.com2us.wannabe.android.google.global.nor.ui.theme.BrainPurple
+import com.com2us.wannabe.android.google.global.nor.ui.theme.BrainSky
+import com.com2us.wannabe.android.google.global.nor.ui.theme.BrainYellow
+import com.microdose.ball.R
 import kotlinx.coroutines.delay
 import kotlin.math.PI
 import kotlin.math.cos
@@ -66,10 +67,17 @@ import kotlin.math.sin
 @Composable
 fun LoadingScreen(
     activity: ComponentActivity,
-    initWorker: InitWorker
+    initWorker: InitWorker,
 ) {
     BackHandler { }
-    PlayfulBackground {
+
+    Box(Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(R.drawable.background),
+            contentDescription = null,
+            contentScale = ContentScale.Crop
+        )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -77,13 +85,6 @@ fun LoadingScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AnimatedBrainEmblem()
-            Spacer(Modifier.height(36.dp))
-            Text(
-                "Braintera",
-                style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onBackground
-            )
             Spacer(Modifier.height(8.dp))
             Text(
                 "Warming up your neurons",
@@ -127,7 +128,10 @@ private fun AnimatedBrainEmblem() {
     val pulse by transition.animateFloat(
         initialValue = 0.95f,
         targetValue = 1.05f,
-        animationSpec = infiniteRepeatable(tween(1400, easing = FastOutSlowInEasing), RepeatMode.Reverse),
+        animationSpec = infiniteRepeatable(
+            tween(1400, easing = FastOutSlowInEasing),
+            RepeatMode.Reverse
+        ),
         label = "pulse"
     )
 
@@ -143,7 +147,8 @@ private fun AnimatedBrainEmblem() {
         ) {
             val center = Offset(size.width / 2f, size.height / 2f)
             val radius = size.minDimension * 0.42f
-            val nodeColors = listOf(BrainBlue, BrainCoral, BrainGreen, BrainYellow, BrainPurple, BrainSky)
+            val nodeColors =
+                listOf(BrainBlue, BrainCoral, BrainGreen, BrainYellow, BrainPurple, BrainSky)
             val steps = nodeColors.size
 
             // Connecting ring
