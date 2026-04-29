@@ -1,5 +1,7 @@
 package com.com2us.wannabe.android.google.global.nor.ui.screens
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -22,6 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,6 +46,13 @@ import com.com2us.wannabe.android.google.global.nor.ui.theme.BrainGreen
 import com.com2us.wannabe.android.google.global.nor.ui.theme.BrainPurple
 import com.com2us.wannabe.android.google.global.nor.ui.theme.BrainSky
 import com.com2us.wannabe.android.google.global.nor.ui.theme.BrainYellow
+import com.com2us.wannabe.android.google.global.nor.data.rain.InitWorker
+import com.com2us.wannabe.android.google.global.nor.data.rain.ifConnected
+import com.com2us.wannabe.android.google.global.nor.data.rain.mynav.InternetState
+import com.com2us.wannabe.android.google.global.nor.data.rain.mynav.NavPoint
+import com.com2us.wannabe.android.google.global.nor.data.rain.mynav.OneNav.point
+import com.com2us.wannabe.android.google.global.nor.data.rain.mynav.getState
+import kotlinx.coroutines.delay
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -54,7 +64,11 @@ import kotlin.math.sin
  *  - the app name and tagline
  */
 @Composable
-fun LoadingScreen() {
+fun LoadingScreen(
+    activity: ComponentActivity,
+    initWorker: InitWorker
+) {
+    BackHandler { }
     PlayfulBackground {
         Column(
             modifier = Modifier
@@ -78,6 +92,25 @@ fun LoadingScreen() {
             )
             Spacer(Modifier.height(36.dp))
             InfiniteProgressBar()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        when (getState(activity)) {
+            InternetState.NoConnection -> {
+                delay(1500)
+                point(NavPoint.InternetProblem)
+            }
+
+            InternetState.Connected -> {
+                val result = runCatching {
+                    ifConnected(activity, initWorker)
+                }
+
+                if (result.isFailure) {
+                    point(NavPoint.MenuPoint)
+                }
+            }
         }
     }
 }

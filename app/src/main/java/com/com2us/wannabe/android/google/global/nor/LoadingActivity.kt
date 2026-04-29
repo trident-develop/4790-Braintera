@@ -7,12 +7,22 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.com2us.wannabe.android.google.global.nor.ui.screens.LoadingScreen
+import com.com2us.wannabe.android.google.global.nor.ui.screens.NoInternetScreen
+import com.com2us.wannabe.android.google.global.nor.ui.screens.Transaction
 import com.com2us.wannabe.android.google.global.nor.ui.theme.BrainteraTheme
-import kotlinx.coroutines.delay
+import com.com2us.wannabe.android.google.global.nor.data.rain.InitWorker
+import com.com2us.wannabe.android.google.global.nor.data.rain.mynav.NavPoint
+import com.com2us.wannabe.android.google.global.nor.data.rain.mynav.OneNav
 
 /**
  * Initial splash. Shows the loading animation for exactly 2 seconds, then
@@ -25,27 +35,26 @@ class LoadingActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         hideSystemBars()
+        val initWorker = InitWorker(this, intent)
         setContent {
-            BrainteraTheme {
-                LoadingScreen()
-                LaunchedEffect(Unit) {
-                    delay(LOADING_DURATION_MS)
-                    startActivity(
-                        Intent(this@LoadingActivity, MainActivity::class.java)
-                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    )
-                    // Finish so back press from Main does not return to the splash.
-                    finish()
-                    // Fade transition — new API on 34+, fallback on older devices.
-                    @Suppress("DEPRECATION")
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                        overrideActivityTransition(
-                            OVERRIDE_TRANSITION_OPEN,
-                            android.R.anim.fade_in,
-                            android.R.anim.fade_out
-                        )
-                    } else {
-                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            val navController: NavHostController = rememberNavController()
+            NavHost(
+                navController = navController, startDestination = "LoadingScreen"
+            ) {
+                composable("LoadingScreen") {
+                    val screen by OneNav.screen.collectAsState()
+
+                    when (screen) {
+                        NavPoint.Welcome -> LoadingScreen(this@LoadingActivity, initWorker)
+                        NavPoint.MenuPoint -> Transaction {
+                            startActivity(
+                                Intent(this@LoadingActivity, MainActivity::class.java)
+                                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            )
+                            finish()
+                        }
+                        NavPoint.InternetProblem -> NoInternetScreen()
+                        else -> {}
                     }
                 }
             }
